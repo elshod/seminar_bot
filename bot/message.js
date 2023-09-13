@@ -4,7 +4,11 @@ const User = require('../model/user')
 
 const { start, requestContact } = require('./helper/start')
 const {get_all_users} = require('./helper/users')
-const {get_all_categories, new_category} = require('./helper/category')
+const {
+  get_all_categories,
+  new_category,
+  save_category,
+} = require('./helper/category');
 
 
 
@@ -26,10 +30,14 @@ bot.on('message', async msg => {
             get_all_users(msg)
         
         if (text === 'Katalog')
-            get_all_categories(msg)
+            get_all_categories(chatId);
 
         if (user.action === 'add_category'){
             new_category(msg)
+        }
+
+        if (user.action.includes('edit_category-')){
+            save_category(chatId,text)
         }
         
     }

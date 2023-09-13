@@ -57,7 +57,7 @@ const requestContact = async (msg) => {
     if (msg.contact.phone_number){
         let user = await User.findOne({chatId}).lean()
         user.phone = msg.contact.phone_number
-        user.admin = msg.contact.phone_number == '+998919141116'
+        user.admin = msg.contact.phone_number.includes('998919141116')
         user.action = 'menu'
         await User.findByIdAndUpdate(user._id,user,{new:true})
         bot.sendMessage(chatId,`Menyuni tanlang, ${user.admin ? 'Admin': user.name}`,{
