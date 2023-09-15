@@ -6,7 +6,15 @@ const {
   show_category,
   remove_category,
   edit_category,
+  get_all_categories,
 } = require('./helper/category');
+
+
+const {
+    delete_product,
+    add_product,
+    show_product
+} = require('./helper/product')
 
 bot.on('callback_query', async query => {
     // console.log(query);
@@ -31,6 +39,29 @@ bot.on('callback_query', async query => {
     if (data.includes('edit_category-')){
         let id = data.split('-')[1];
         edit_category(chatId,id)
+    }
+    if (data.includes('add_product-')){
+        let id = data.split('-')[1]
+        add_product(chatId,id)
+    }
+
+    if (data.includes('product_')){
+        let id = data.split('_')[1]
+        show_product(chatId,id)
+    }
+
+    if (data.includes('del_product-')){
+        let id = data.split('-')[1]
+        delete_product(chatId,id)
+    }
+    
+    if (data.includes('rem_product-')){
+        let id = data.split('-')[1]
+        delete_product(chatId,id,true)
+    }
+
+    if (data === 'catalog'){
+        get_all_categories(chatId)
     }
 
 })

@@ -10,9 +10,22 @@ const Product = new Schema({
     ref: 'Category'
   },
   status: {
-    type: Boolean,
-    default: true
+    type: Number,
+    default: 0
+    /*
+      0 - qo'shilyapdi
+      1 - aktiv mahsulot
+      2 - nofaol mahsulot
+    */
   }
 })
+
+/*
+  1. title
+  2. narhi
+  3. fayli
+  4. matni
+
+*/
 
 module.exports = model('Product',Product)
