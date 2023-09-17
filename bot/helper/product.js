@@ -55,16 +55,8 @@ const add_product_next = async (chatId,value,slug) => {
             })
             bot.sendMessage(chatId,steps[slug].text)
         }
-
         await Product.findByIdAndUpdate(product._id,product,{new:true})
     }
-
-    
-
-
-
-
-
 }
 
 const clear_draft_product = async () => {
@@ -76,49 +68,37 @@ const clear_draft_product = async () => {
     }
 }
 
-const show_product = async (chatId,id) => {
+const show_product = async (chatId,id, count = 1, message_id = null, type = false) => {
     let product = await Product.findById(id).populate(['category']).lean()
     let user = await User.findOne({chatId}).lean()
+
+    const inline_keyboard = [
+        [
+            {text:'➖',callback_data:`less_count-${product._id}-${count}`},
+            {text:count,callback_data:count},
+            {text:'➕',callback_data:`more_count-${product._id}-${count}`},
+        ],
+        user.admin ? 
+        [
+            {text:'✏️ Tahrirlash',callback_data: `edit_product-${product._id}`},
+            {text:'🗑 O`chirish',callback_data: `del_product-${product._id}`}
+        ] : [],
+        [
+            {text:'🛒 Buyurtma berish',callback_data: `order-${product._id}-${count}`}
+        ]
+    ]
+
+    if (message_id > 0 && !type){
+        return bot.editMessageReplyMarkup({inline_keyboard},{chat_id: chatId, message_id})
+    } 
     bot.sendPhoto(chatId,product.img,{
         caption: `<b>${product.title}</b>\n📦 Turkum: ${product.category.title}\n💸 Narhi: ${product.price} so'm\n🔥 Qisqa ma'lumot:\n${product.text}`,
         parse_mode:'HTML',
         reply_markup: {
-            inline_keyboard: [
-                [
-                    {
-                        text:'➖',
-                        callback_data:'less_count'
-                    },
-                    {
-                        text:'1',
-                        callback_data:'1'
-                    },
-                    {
-                        text:'➕',
-                        callback_data:'more_count'
-                    },
-                ],
-                user.admin ? 
-                [
-                   {
-                    text:'✏️ Tahrirlash',
-                    callback_data: `edit_product-${product._id}`
-                   },
-                   {
-                    text:'🗑 O`chirish',
-                    callback_data: `del_product-${product._id}`
-                   }
-                ]
-                : [],
-                [
-                    {
-                        text:'🛒 Korzinkaga qo`shish',
-                        callback_data: 'add_cart'
-                    }
-                ]
-            ]
+            inline_keyboard
         }
     })
+    
 
 }
 

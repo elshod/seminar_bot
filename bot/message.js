@@ -12,15 +12,20 @@ const {
 
 const {add_product_next} = require('./helper/product')
 
+const {end_order} = require('./helper/order')
 
 bot.on('message', async msg => {
     const chatId = msg.from.id
     const text = msg.text 
-    console.log(text)
+    console.log(msg)
     const user = await User.findOne({chatId}).lean()
 
-    if (text === '/start'){
+    if (text === '/start' || text === '/menu'){
         start(msg)
+    }
+
+    if (msg.location && user.action == 'order'){
+        end_order(chatId,msg.location);
     }
 
     if (user){
@@ -46,7 +51,7 @@ bot.on('message', async msg => {
         }
         
         if (text === 'Katalog'){
-            get_all_categories(chatId);
+            get_all_categories(chatId, 1);
             return
         }
 
